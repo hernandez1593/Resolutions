@@ -1,0 +1,41 @@
+= form_with(model: resolution, local: true) do |form|
+  - if resolution.errors.any?
+    #error_explanation
+      %h2
+        = pluralize(resolution.errors.count, "error")
+        prohibited this resolution from being saved:
+      %ul
+        - resolution.errors.full_messages.each do |message|
+          %li= message
+  .container
+    .row
+      .col
+        .form-group
+          = form.label "Asunto"
+          = form.text_field :title, autofocus: false, class: 'form-control'
+      .col
+        .form-group
+          = form.label "Codigo"
+          = form.text_field :code, autofocus: false, class: 'form-control'
+    .row
+      .col
+        .form-group
+          = form.label "Fecha"
+          = form.text_field :topic, autofocus: false, class: 'form-control'
+    .row
+      .col
+        .form-group
+          = form.label "De"
+          = form.text_field :from, autofocus: false, class: 'form-control'
+      .col
+        .form-group
+          = form.label "Para"
+          = form.text_field :to, autofocus: false, class: 'form-control'
+
+    .row
+      .col
+        .form-group
+          = form.label "Contenido"
+          = form.text_area :description, autofocus: false, class: 'form-control', rows: 3
+  .actions
+    = form.submit "Crear", class: 'btn btn-primary'

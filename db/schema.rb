@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_09_24_151614) do
+ActiveRecord::Schema.define(version: 2018_11_14_123832) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,6 +42,7 @@ ActiveRecord::Schema.define(version: 2018_09_24_151614) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "mentor_id"
+    t.string "phone"
     t.index ["mentor_id"], name: "index_companies_on_mentor_id"
   end
 
@@ -51,8 +52,10 @@ ActiveRecord::Schema.define(version: 2018_09_24_151614) do
     t.bigint "company_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "mentor_id"
     t.index ["checklist_id"], name: "index_has_tags_on_checklist_id"
     t.index ["company_id"], name: "index_has_tags_on_company_id"
+    t.index ["mentor_id"], name: "index_has_tags_on_mentor_id"
     t.index ["tag_id"], name: "index_has_tags_on_tag_id"
   end
 
@@ -104,11 +107,24 @@ ActiveRecord::Schema.define(version: 2018_09_24_151614) do
     t.index ["company_id"], name: "index_phases_on_company_id"
   end
 
+  create_table "resolutions", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.string "code"
+    t.string "from"
+    t.string "to"
+    t.string "topic"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "tags", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "client_id"
     t.integer "tag_type"
+    t.index ["client_id"], name: "index_tags_on_client_id"
   end
 
   create_table "tasks", force: :cascade do |t|
@@ -153,7 +169,19 @@ ActiveRecord::Schema.define(version: 2018_09_24_151614) do
     t.datetime "updated_at", null: false
     t.string "account_type"
     t.integer "account_id"
+    t.string "invitation_token"
+    t.datetime "invitation_created_at"
+    t.datetime "invitation_sent_at"
+    t.datetime "invitation_accepted_at"
+    t.integer "invitation_limit"
+    t.string "invited_by_type"
+    t.bigint "invited_by_id"
+    t.integer "invitations_count", default: 0
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
+    t.index ["invitations_count"], name: "index_users_on_invitations_count"
+    t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
+    t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by_type_and_invited_by_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
@@ -161,12 +189,14 @@ ActiveRecord::Schema.define(version: 2018_09_24_151614) do
   add_foreign_key "companies", "mentors"
   add_foreign_key "has_tags", "checklists"
   add_foreign_key "has_tags", "companies"
+  add_foreign_key "has_tags", "mentors"
   add_foreign_key "has_tags", "tags"
   add_foreign_key "locations", "admins"
   add_foreign_key "locations", "companies"
   add_foreign_key "messages", "tasks"
   add_foreign_key "milestones", "phases"
   add_foreign_key "phases", "companies"
+  add_foreign_key "tags", "clients"
   add_foreign_key "tasks", "checklists"
   add_foreign_key "time_trackings", "clients"
   add_foreign_key "time_trackings", "companies"

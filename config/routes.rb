@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   root 'welcome#index'
   devise_for :users
 
+
+  resources :resolutions
   namespace :admin do
     root 'dashboard#show'
     resources :users, only: [:index, :show, :destroy]

@@ -1,0 +1,8 @@
+.container
+  .row
+    .col
+      = "Asunto #{@resolution.title}"
+
+= link_to 'Edit', edit_resolution_path(@resolution)
+|
+= link_to 'Back', resolutions_path
